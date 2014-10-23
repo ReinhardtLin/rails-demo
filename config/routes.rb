@@ -5,7 +5,6 @@ Rails.application.routes.draw do
   get "welcome" => "welcome#index"
   root :to => "welcome#index"
 
-  match ':controller(/:action(/:id(.:format)))', :via => :all
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -60,4 +59,6 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  match ':controller(/:action(/:id(.:format)))', :via => :all
 end

@@ -1,38 +1,55 @@
 class EventsController < ApplicationController
-	@event = Event.all
-end
 
-def create
-	@event = Event.new(params[:event])
-	@event.save
+	before_action :set_event, :only => [ :show, :edit, :update, :destroy]
 
-	redirect_to :action => :index
-end
+	def index
+	  # @events = Event.all
+	  @events = Event.page(params[:page]).per(5)
+	end
 
-def show
-	@event = Event.find(params[:id])
-end
+	def new
+	  @event = Event.new
+	end
 
-def edit
-	@event + Event.find(params[:id])
-end
+	def create
+	  @event = Event.new(event_params)
+	  if @event.save
+	  	 flash[:notice] = "event was successfully created"
+		 redirect_to :action => :index
+	  else
+		 render :action => :new
+	  end
+	end
 
-def update
-  @event = Event.find(params[:id])
-  @event.update_attributes(event_params)
+	def show
+  	  @page_title = @event.name
+	end
 
-  redirect_to :action => :show, :id => @event
-end
+	def edit
+	end
 
-def destroy
-  @event = Event.find(params[:id])
-  @event.destroy
+	def update
+	  if @event.update_attributes(event_params)
+		 flash[:notice] = "event was successfully updated"
+		 redirect_to :action => :show, :id => @event
+	  else
+	  	render :action => :edit
+	  end
+	end
 
-  redirect_to :action => :index
-end
+	def destroy
+	  @event.destroy
+	  flash[:alert] = "event was successfully deleted"
+	  redirect_to :action => :index
+	end
 
-private
+	private
 
-def event_params
-	params.require(:event).permit(:name, :description)
+	def set_event
+  	  @event = Event.find(params[:id])
+	end
+
+	def event_params
+		params.require(:event).permit(:name, :description)
+	end
 end
